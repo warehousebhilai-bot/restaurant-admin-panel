@@ -35,6 +35,10 @@ const state = {
   alerts: ['2 low stock alerts', '1 table waiting for billing'],
 };
 
+const COST_OF_GOODS_RATIO = 0.45;
+const LOYALTY_POINTS_DIVISOR = 20;
+const INVENTORY_DEPLETION_PROBABILITY = 0.25;
+
 const el = (id) => document.getElementById(id);
 const currency = (n) => n.toFixed(2);
 
@@ -73,7 +77,7 @@ function renderDashboard() {
   el('alerts-list').innerHTML = state.alerts.map(a => `<li>${a}</li>`).join('');
 
   const sales = todaySales;
-  const cogs = sales * 0.45;
+  const cogs = sales * COST_OF_GOODS_RATIO;
   const gst = sales * (state.settings.gst / 100);
   const profit = sales - cogs;
   const cards = [
@@ -192,7 +196,7 @@ function advanceOrder(orderId) {
       table.orderId = null;
     }
     const customer = state.customers.find((c) => c.id === order.customerId);
-    if (customer) customer.points += Math.round(order.total / 20);
+    if (customer) customer.points += Math.round(order.total / LOYALTY_POINTS_DIVISOR);
   }
   renderAll();
 }
@@ -309,7 +313,7 @@ function startRealtimeSimulation() {
     if (state.salesTrend.length > 10) state.salesTrend.shift();
 
     state.inventory.forEach((i) => {
-      if (Math.random() < 0.25) i.stock = Math.max(i.stock - 1, 0);
+      if (Math.random() < INVENTORY_DEPLETION_PROBABILITY) i.stock = Math.max(i.stock - 1, 0);
     });
 
     const low = state.inventory.filter((i) => i.stock <= i.threshold).length;
@@ -326,7 +330,7 @@ function startRealtimeSimulation() {
   }, 5000);
 }
 
-function runClock() {
+function runTimestampUpdater() {
   setInterval(() => {
     el('live-clock').textContent = `Updated: ${new Date().toLocaleString()}`;
   }, 1000);
@@ -335,5 +339,5 @@ function runClock() {
 initNav();
 bindForms();
 renderAll();
-runClock();
+runTimestampUpdater();
 startRealtimeSimulation();
