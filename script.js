@@ -140,6 +140,12 @@ function placeOrder() {
   const gst = subtotal * (state.settings.gst / 100);
   const discount = subtotal * (state.settings.discount / 100);
   const total = subtotal + gst - discount;
+  const table = state.tables.find((t) => t.id === tableId);
+  if (!table || table.occupied) {
+    state.alerts.unshift(`Table ${tableId} is unavailable. Select a free table.`);
+    renderDashboard();
+    return;
+  }
 
   const order = {
     id: Date.now(),
@@ -155,11 +161,8 @@ function placeOrder() {
     createdAt: new Date(),
   };
   state.orders.unshift(order);
-  const table = state.tables.find((t) => t.id === tableId);
-  if (table) {
-    table.occupied = true;
-    table.orderId = order.id;
-  }
+  table.occupied = true;
+  table.orderId = order.id;
   state.cart = [];
   state.alerts.unshift(`Order #${order.id.toString().slice(-4)} sent to kitchen`);
   renderAll();
@@ -275,7 +278,11 @@ function bindForms() {
     const price = Number(el('new-item-price').value);
     const category = el('new-item-category').value.trim() || 'Uncategorized';
     const modifiers = el('new-item-modifiers').value.split(',').map(s => s.trim()).filter(Boolean);
-    if (!name || !price) return;
+    if (!name || price <= 0) {
+      state.alerts.unshift('Menu item name and positive price are required.');
+      renderDashboard();
+      return;
+    }
     state.menu.push({ id: Date.now(), name, price, category, modifiers });
     el('new-item-name').value = '';
     el('new-item-price').value = '';
@@ -331,9 +338,10 @@ function startRealtimeSimulation() {
 }
 
 function runTimestampUpdater() {
+  el('live-clock').textContent = `Updated: ${new Date().toLocaleString()}`;
   setInterval(() => {
     el('live-clock').textContent = `Updated: ${new Date().toLocaleString()}`;
-  }, 1000);
+  }, 30000);
 }
 
 initNav();
