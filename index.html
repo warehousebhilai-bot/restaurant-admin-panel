@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Restaurant Admin Panel</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <h1>RestroOS</h1>
+      <nav id="sidebar-nav">
+        <button class="nav-link active" data-section="dashboard">Dashboard</button>
+        <button class="nav-link" data-section="pos">POS</button>
+        <button class="nav-link" data-section="orders">Orders</button>
+        <button class="nav-link" data-section="kitchen">Kitchen</button>
+        <button class="nav-link" data-section="tables">Tables</button>
+        <button class="nav-link" data-section="menu">Menu</button>
+        <button class="nav-link" data-section="inventory">Inventory</button>
+        <button class="nav-link" data-section="staff">Staff</button>
+        <button class="nav-link" data-section="customers">Customers</button>
+        <button class="nav-link" data-section="billing">Billing</button>
+        <button class="nav-link" data-section="reports">Reports</button>
+        <button class="nav-link" data-section="branches">Branches</button>
+        <button class="nav-link" data-section="settings">Settings</button>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h2 id="section-title">Dashboard</h2>
+          <small id="live-clock" aria-live="polite"></small>
+        </div>
+        <div class="badge">Live Updates</div>
+      </header>
+
+      <section id="dashboard" class="section active">
+        <div class="grid four" id="kpi-cards"></div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Sales Trend</h3>
+            <div id="sales-chart" class="chart"></div>
+          </article>
+          <article class="card">
+            <h3>Alerts</h3>
+            <ul id="alerts-list" class="list"></ul>
+          </article>
+        </div>
+      </section>
+
+      <section id="pos" class="section">
+        <div class="grid two">
+          <article class="card">
+            <h3>Menu Items</h3>
+            <div id="pos-menu" class="menu-grid"></div>
+          </article>
+          <article class="card">
+            <h3>Cart & Billing</h3>
+            <ul id="cart-list" class="list"></ul>
+            <div class="totals">
+              <div>Subtotal: ₹<span id="subtotal">0</span></div>
+              <div>GST (<span id="gst-rate-label">5</span>%): ₹<span id="gst-amount">0</span></div>
+              <div>Total: ₹<strong id="grand-total">0</strong></div>
+            </div>
+            <div class="form-row">
+              <label>Table
+                <select id="table-select"></select>
+              </label>
+              <label>Customer
+                <select id="customer-select"></select>
+              </label>
+            </div>
+            <div class="form-row">
+              <label>Split Bill
+                <input id="split-count" type="number" min="1" value="1" />
+              </label>
+              <label>Payment
+                <select id="payment-method">
+                  <option>Cash</option>
+                  <option>Card</option>
+                  <option>UPI</option>
+                </select>
+              </label>
+            </div>
+            <button id="place-order-btn" class="primary">Place Order</button>
+          </article>
+        </div>
+      </section>
+
+      <section id="orders" class="section">
+        <article class="card">
+          <h3>Order Lifecycle</h3>
+          <ul id="orders-list" class="list"></ul>
+        </article>
+      </section>
+
+      <section id="kitchen" class="section">
+        <article class="card">
+          <h3>Kitchen Display Queue</h3>
+          <ul id="kitchen-list" class="list"></ul>
+        </article>
+      </section>
+
+      <section id="tables" class="section">
+        <article class="card">
+          <h3>Table Management</h3>
+          <div id="tables-grid" class="table-grid"></div>
+        </article>
+      </section>
+
+      <section id="menu" class="section">
+        <div class="grid two">
+          <article class="card">
+            <h3>Categories & Items</h3>
+            <ul id="menu-list" class="list"></ul>
+          </article>
+          <article class="card">
+            <h3>Add Menu Item</h3>
+            <div class="stack">
+              <input id="new-item-name" placeholder="Item name" />
+              <input id="new-item-price" type="number" placeholder="Price" />
+              <input id="new-item-category" placeholder="Category" />
+              <input id="new-item-modifiers" placeholder="Modifiers (comma-separated)" />
+              <button id="add-menu-item" class="primary">Add Item</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="inventory" class="section">
+        <article class="card">
+          <h3>Stock Tracking</h3>
+          <ul id="inventory-list" class="list"></ul>
+        </article>
+      </section>
+
+      <section id="staff" class="section">
+        <article class="card">
+          <h3>Staff Roles & Permissions</h3>
+          <ul id="staff-list" class="list"></ul>
+        </article>
+      </section>
+
+      <section id="customers" class="section">
+        <article class="card">
+          <h3>Customers & Loyalty</h3>
+          <ul id="customers-list" class="list"></ul>
+        </article>
+      </section>
+
+      <section id="billing" class="section">
+        <article class="card">
+          <h3>Transactions</h3>
+          <ul id="billing-list" class="list"></ul>
+        </article>
+      </section>
+
+      <section id="reports" class="section">
+        <div class="grid three" id="report-cards"></div>
+      </section>
+
+      <section id="branches" class="section">
+        <article class="card">
+          <h3>Multi-Branch Management</h3>
+          <ul id="branches-list" class="list"></ul>
+        </article>
+      </section>
+
+      <section id="settings" class="section">
+        <article class="card">
+          <h3>Settings</h3>
+          <div class="settings-grid">
+            <label>GST % <input id="setting-gst" type="number" value="5" /></label>
+            <label>Discount % <input id="setting-discount" type="number" value="0" /></label>
+            <label>Notifications
+              <select id="setting-notifications">
+                <option>Enabled</option>
+                <option>Disabled</option>
+              </select>
+            </label>
+            <button id="save-settings" class="primary">Save</button>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
